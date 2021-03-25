@@ -85,6 +85,8 @@ def version_5():
     print(f"add(10,20): {add(10,20)}")
     print(f"sub(10,20): {sub(10,20)}")
 
+
+
 # Looks good, but still have a problem
 # what if function in wrapper could have different types of arguments
 # so we replace x and y with *args and **kwargs
@@ -141,6 +143,7 @@ def version_7():
 
     print(f"add(10,20): {add(10,20)}")
     print(f"sub(10,20): {sub(10,20)}")
+
 
 # version_1()
 # version_2()
