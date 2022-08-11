@@ -1,0 +1,10 @@
+version: "3"
+services:
+
+  ubuntu :
+    build: ./ubuntu/
+    platform: linux/amd64 # for Mac Silicon
+    tty: true
+  db:
+    platform: linux/amd64 # for Mac Silicon
+    build: ./database/
