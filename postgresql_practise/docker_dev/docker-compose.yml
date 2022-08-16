@@ -1,0 +1,42 @@
+# docker-compose up will create image, container and network with the prefix name of current directory
+# if name property is not specified.
+# eg. if current directory is 'my-app', then image name will be 'my-app_image' and container name will be 'my-app_container'
+
+
+version: "3"
+
+networks:
+  playground: # docker network name
+    driver: bridge
+
+services:
+
+  # image name defaultly would be <compose_file_directory>_<playground_ubuntu>
+  # if image: is not specified in a service
+  playground_ubuntu: 
+    image: playground_ubuntu
+    container_name: playground_ubuntu 
+    build: ./ubuntu/
+    platform: linux/amd64
+    tty: true
+    ports:
+      - "8001:8001"
+    # volumes will synchronise local directory with the container 
+    # <local_directory>:<container_directory>
+    volumes:
+      - /Users/gaozheng/Documents/coding/cienet/corsa_playground/src:/root/code
+    networks:
+      - playground
+
+
+  playground_db: 
+    image: playground_db # image name
+    container_name: playground_db # container name
+    platform: linux/amd64 # for Mac Silicon
+    build: ./database/ # build this service with the Dockerfile in the specified directory
+    environment: # set the environment variable to the service
+      POSTGRES_DB: database
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: secret
+    networks: 
+      - playground
