@@ -5,8 +5,8 @@
 version: "3"
 services:
 
-  ubuntu : # image name
-    container_name: ubuntu_test
+  postgresql_practise_ubuntu : # image name
+    container_name: postgresql_practise_ubuntu
     build: ./ubuntu/
     platform: linux/amd64 # for Mac Silicon
     tty: true
@@ -17,8 +17,8 @@ services:
       # <local_directory>:<container_directory>
       - /Users/gaozheng/Documents/coding/practise_python/postgresql_practise:/root/code
     
-  db: # image name
-    container_name: db_test
+  postgresql_practise_db: # image name
+    container_name: postgresql_practise_db
     platform: linux/amd64 # for Mac Silicon
     build: ./database/
     environment:
