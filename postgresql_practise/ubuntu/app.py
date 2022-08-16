@@ -15,4 +15,4 @@ if __name__ == '__main__':
 
     # get data in accounts table
     response = db.execute("SELECT * FROM accounts;")
-    print("app response: ", response)
+    print("app response: ", response.all())

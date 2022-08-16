@@ -1,10 +1,27 @@
+# docker-compose up will create a network that is named after the current directory
+# create a container by its setting under the services scope
+# eg. 
+
 version: "3"
 services:
 
-  ubuntu :
+  ubuntu : # image name
+    container_name: ubuntu_test
     build: ./ubuntu/
     platform: linux/amd64 # for Mac Silicon
     tty: true
-  db:
+    ports:
+      - "8080:8080"
+    
+  db: # image name
+    container_name: db_test
     platform: linux/amd64 # for Mac Silicon
     build: ./database/
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: secret
+
+networks:
+  postgresql_practise: # docker network name
+    driver: bridge
