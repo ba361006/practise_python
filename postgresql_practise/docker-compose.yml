@@ -11,7 +11,11 @@ services:
     platform: linux/amd64 # for Mac Silicon
     tty: true
     ports:
-      - "8080:8080"
+      - "8001:8001"
+    volumes:
+      # volumes will synchronise local directory with the container 
+      # <local_directory>:<container_directory>
+      - /Users/gaozheng/Documents/coding/practise_python/postgresql_practise:/root/code
     
   db: # image name
     container_name: db_test
