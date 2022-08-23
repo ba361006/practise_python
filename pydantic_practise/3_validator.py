@@ -18,7 +18,10 @@ class UserModel(BaseModel):
 
     @validator('password2')
     def passwords_match(cls, v, values, **kwargs):
-        # this function focuses on password2, and values is a keyword for validator
+        # v: password2
+        # values: a dictionary includes every field(class variable) defined ahead password2
+        
+        # this function focuses on password2, and values is a keyword argument for validator
         # values will return any "previous" validated fields which will be name, username and password1
         # you can switch the order of password1 and password2 and try run the code again to see the result
         print("values: ", values)

@@ -14,4 +14,4 @@ async def root():
         print("do shit")
     return {"message": "Hello World"}
 
-# enter uvicorn fastapi_practise.0_entry:app --reload
+# enter python3 -m uvicorn fastapi_practise.0_entry:app --reload
