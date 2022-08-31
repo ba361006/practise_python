@@ -14,7 +14,9 @@ class Item(BaseModel):
 app = FastAPI()
 
 
-@app.post("/items/")
+@app.get("/")
 async def create_item(item: Item):
     print("get item: ", item.__class__)
     return item
+
+# python3 -m uvicorn fastapi_practise.1_post_pydantic_object:app --reload
