@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "name_of_vitualenv"
+version = "0.1.0"
+description = ""
+authors = ["Gao Zheng <ba361006@gmail.com>"]
+readme = "README.md"
+packages = [{include = "python_3_9_13"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.10"
+
+# production packages, sys_platform windows => win32, linux => linux, MacOS => darwin
+pydantic = "*"
+
+# for windows
+pywin32 = [{ version = "*", markers = "sys_platform=='win32'"}]
+
+# for MacOS (test)
+fastapi = [{version="*", markers="sys_platform=='darwin'"}]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
