@@ -1,11 +1,9 @@
-#mathlib_procA.py
 class Math():
     __offset = 100
     
     def readOffset(self):
         print("the Math function offset has returned")
         return self.__offset
-#mathlib_procB.py
 
 class Calculator(Math):
     def addValue(self, a, b):
