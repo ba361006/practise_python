@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "practise-python"
+version = "0.1.0"
+description = ""
+authors = ["Gao Zheng <ba361006@gmail.com>"]
+readme = "README.md"
+packages = [{include = "practise_python"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.10" # for pyside6
+
+# dev packages
+pylint = "*"
+mypy = "*"
+black = "*"
+pre-commit = "*"
+
+pydantic = "*"
+fastapi = "*"
+sqlalchemy = "*"
+PySide6 = "*"
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
