@@ -25,4 +25,5 @@ RUN /tmp/Python-3.10.7/configure --enable-optimizations
 RUN sudo make altinstall
 RUN sudo make install
 
+# set /root as login directory
 WORKDIR /root
