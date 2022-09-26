@@ -3,7 +3,7 @@ RUN apt-get update
 
 # change python3.10 to any preferred python version you like
 # some extra questions
-RUN apt-get install -y python3.10
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y python3.10
 RUN apt-get install -y python3-pip
 
 RUN su -
