@@ -10,17 +10,20 @@ from typing import Optional, Union
 # def foo(bar: Union[Hello1, Hello2]):
 #     print(
 #         bar.hello1 # type: ignore
-#     ) 
-
+#     )
 
 
 from dataclasses import dataclass
+
+
 @dataclass
 class Hello:
     name: Optional[str]
 
+
 def hello(name: str):
     print(name)
+
 
 a = Hello(name="name")
 hello(name=a.name)

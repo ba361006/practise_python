@@ -1,10 +1,12 @@
 from time import time
 
+
 # In the beginning we need to know the spending time of calling a funcdtion add
 # we do this
 def version_1():
     def add(x, y=10):
-        return x+y
+        return x + y
+
     before = time()
     print(f"add(10): {add(10)}")
     after = time()
@@ -20,7 +22,8 @@ def version_1():
     after = time()
     print(f"spending time: {after - before}")
 
-# Then, we try to simplify it, like the following 
+
+# Then, we try to simplify it, like the following
 def version_2():
     def add(x, y=10):
         before = time()
@@ -28,6 +31,7 @@ def version_2():
         after = time()
         print(f"spending time: {after - before}")
         return result
+
     print(f"add(10): {add(10)}")
     print(f"add(20,30): {add(20,30)}")
     print(f"add('a','b'): {add('a', 'b')}")
@@ -44,26 +48,28 @@ def version_3():
         print(f"spending time: {after - before}")
         return result
 
+
 # then we pack it like this
 def version_4():
     def timer(func, x, y=10):
         before = time()
-        result = func(x,y)
+        result = func(x, y)
         after = time()
         print(f"spending time: {after - before}")
         return result
 
     def add(x, y=10):
-        return x+y
-    
+        return x + y
+
     def sub(x, y=10):
-        return x-y
-    
+        return x - y
+
     print(f"add(10): {timer(add, 10)}")
     print(f"add(20,30): {timer(add, 20, 30)}")
     print(f"sub(20,10): {timer(sub, 20, 10)}")
 
-# still annoying, 
+
+# still annoying,
 def version_5():
     def timer(func):
         def wrapper(x, y=10):
@@ -72,19 +78,21 @@ def version_5():
             after = time()
             print(f"spending time: {after - before}")
             return result
+
         return wrapper
 
     def add(x, y=10):
-        return x+y
-    add = timer(add) # like a pointer
+        return x + y
+
+    add = timer(add)  # like a pointer
 
     def sub(x, y=10):
-        return x-y
+        return x - y
+
     sub = timer(sub)
 
     print(f"add(10,20): {add(10,20)}")
     print(f"sub(10,20): {sub(10,20)}")
-
 
 
 # Looks good, but still have a problem
@@ -99,14 +107,17 @@ def version_6():
             after = time()
             print(f"spending time: {after - before}")
             return result
+
         return wrapper
 
     def add(x, y=10):
-        return x+y
-    add = timer(add) # like a pointer
+        return x + y
+
+    add = timer(add)  # like a pointer
 
     def sub(x, y=10):
-        return x-y
+        return x - y
+
     sub = timer(sub)
 
     print(f"add(10,20): {add(10,20)}")
@@ -131,15 +142,16 @@ def version_7():
             after = time()
             print(f"spending time: {after - before}")
             return result
+
         return wrapper
-    
+
     @timer
     def add(x, y=10):
-        return x+y
+        return x + y
 
     @timer
     def sub(x, y=10):
-        return x-y
+        return x - y
 
     print(f"add(10,20): {add(10,20)}")
     print(f"sub(10,20): {sub(10,20)}")

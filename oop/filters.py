@@ -1,18 +1,17 @@
-from abc import ABC, abstractmethod
 import json
 import logging
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, NamedTuple, Optional, Tuple, Type
 
-from sqlalchemy import Column, String, desc
-from sqlalchemy.exc import DataError, ProgrammingError
-from sqlalchemy_filters import apply_filters, apply_pagination, apply_sort  # type: ignore
-
 from cso.api.common import CommonQuery
 from cso.db.database import Base
-
+from sqlalchemy import Column, String, desc
+from sqlalchemy.exc import DataError, ProgrammingError
 from sqlalchemy.orm import Query
+from sqlalchemy_filters import (apply_filters,  # type: ignore
+                                apply_pagination, apply_sort)
 
 APPLOG = logging.getLogger(__name__)
 
@@ -63,7 +62,9 @@ def apply_cso_filters(
                 filter_spec[i]["value"] = "%" + filter_spec[0]["value"] + "%"
 
         # add model to our filters
-        filter_spec = [{**item, **{"model": base_model.__name__}} for item in filter_spec]
+        filter_spec = [
+            {**item, **{"model": base_model.__name__}} for item in filter_spec
+        ]
         db_query = apply_filters(db_query, filter_spec)
 
     sort_spec = query_modifiers_dict["sorters"]
@@ -90,24 +91,26 @@ def apply_cso_filters(
             query_modifiers_dict,
             str(pe),
         )
-        pagination = Pagination(page_size=0, total_results=0, page_number=1, num_pages=0)
+        pagination = Pagination(
+            page_size=0, total_results=0, page_number=1, num_pages=0
+        )
     except DataError:
         APPLOG.warning(
             "Invalid input data %s for %s type",
             str(query_value),
             str(column_type),
         )
-        pagination = Pagination(page_size=0, total_results=0, page_number=1, num_pages=0)
+        pagination = Pagination(
+            page_size=0, total_results=0, page_number=1, num_pages=0
+        )
 
     return db_query, pagination
 
 
 class Filter(ABC):
-
     def __init__(self, field: Column[Any], value: Any):
         self.field: Column[Any] = field
         self.value: Any = value
-
 
     @abstractmethod
     def apply(self, query):
@@ -118,21 +121,23 @@ class FilterLike(Filter):
     def apply(self, query: Query):
         query.filter(self.field.ilike(f"%{self.value}%"))
 
+
 class FilterEqual(Filter):
     def apply(self, query: Query):
         query.filter(self.field == self.value)
 
+
 class FilterMin(Filter):
     def appy(self, query: Query):
         query.filter(self.field >= self.value)
+
 
 class FilterMax(Filter):
     def appy(self, query: Query):
         query.filter(self.field <= self.value)
 
 
-class Filters():
-
+class Filters:
     def __init__(self):
         self.filters = []
 
