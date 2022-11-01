@@ -1,65 +1,53 @@
+# -*- coding: utf-8 -*-
+import asyncio
+import functools
+import logging
 from typing import Any
+from typing import Callable
+from typing import cast
+from typing import TypeVar
 
 import aioredis
 import async_timeout
-import asyncio
-import functools
-from aioredis import ConnectionsPool
+from redis import asyncio as aioredis
+from redis.asyncio import Redis
+
+TIMEOUT = 1
+setting_url = "redis://localhost"
+
+APPLOG = logging.getLogger(__name__)
+
+FnT = TypeVar("FnT", bound=Callable[..., Any])
 
 
-def timeout_decorator(func):
+def redis_timeout(func: FnT) -> FnT:
     @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
-            async with async_timeout.timeout(0.5):
-                return await func(*args, **kwargs)
+            async with async_timeout.timeout(TIMEOUT):
+                async with aioredis.from_url(setting_url) as redis:
+                    return await func(*args, **kwargs, redis=redis)
         except asyncio.exceptions.TimeoutError:
-            print("RedisCache has reached %s seconds", 0.5)
-            raise
+            APPLOG.error("RedisCache has reached %s seconds", TIMEOUT)
         except Exception as err:
-            print("RedisCache error: %s", err)
+            APPLOG.error("RedisCache error: %s", err)
             raise
-    return wrapper
+
+    return cast(FnT, wrapper)
+
 
 class RedisCache:
-    redis: ConnectionsPool
+    @redis_timeout
+    async def task_1(self, redis) -> None:
+        await redis.set(name="happy", value="sym")
+        response = await redis.get("happy")
+        print(response.decode("utf-8"))
 
-
-    async def connect(self) -> None:
-        self.redis = await aioredis.create_redis_pool("redis://localhost")
-
-    async def set(self, key: str, value: str) -> Any:
-        return await self.redis.set(key, value)
-
-    async def get(self, key: str) -> Any:
-        return await self.redis.get(key)
-
-    async def expire(self, key: str, timeout: int) -> Any:
-        return await self.redis.expire(key, timeout)
-
-    async def flushall(self) -> Any:
-        return await self.redis.flushall()
-
-    async def delete(self, key: str) -> Any:
-        return await self.redis.delete(key)
-
-    def close(self) -> None:
-        self.redis.close()
-
-    @timeout_decorator
-    async def test(self, key, value):
-        # raise ValueError
-        await asyncio.sleep(1)
-        await self.set(key, value)
-        response = await self.get(key)
-        print(response)
 
 async def main():
     cache = RedisCache()
-    await cache.connect()
-    await cache.test("hello", "world")
+    await cache.task_1()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-

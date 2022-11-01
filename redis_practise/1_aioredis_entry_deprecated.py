@@ -5,7 +5,7 @@ check README.md for further information
 """
 import asyncio
 
-from redis import asyncio as aioredis
+import aioredis
 
 
 async def single_set(service: aioredis.Redis) -> None:
@@ -33,8 +33,14 @@ async def multiple_set(service: aioredis.Redis) -> None:
 
 async def main(service: aioredis.Redis):
     await single_set(service=service)
+    await multiple_set(service=service)
 
 
 if __name__ == "__main__":
+    """
+    this practise is deprecated since it's for aioredis 1.3.1 and now corsa is using redis 4.3.4
+    """
+    # TCP socket connection and reuse is done behind the scenes after invoking redis.Redis()
+    # default port will be 6379
     redis_service = aioredis.from_url("redis://localhost")
     asyncio.run(main(service=redis_service))

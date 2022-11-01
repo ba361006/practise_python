@@ -8,18 +8,23 @@ packages = [{include = "practise_python"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.10" # for pyside6
-
-# dev packages
-pylint = "*"
-mypy = "*"
-black = "*"
-pre-commit = "*"
-
 pydantic = "*"
 fastapi = "*"
 sqlalchemy = "*"
 PySide6 = "*"
 pytest = "*"
+redis = "^4.3.4"
+
+[tool.poetry.group.dev]
+# optional = true indicates packages under the group.dev.dependencies
+# will only be installed while calling `poetry install --with dev`
+optional = false
+
+[tool.poetry.group.dev.dependencies]
+pylint = "*"
+mypy = "*"
+black = "*"
+pre-commit = "*"
 
 [build-system]
 requires = ["poetry-core"]
