@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import asyncio
 import functools
+import inspect
 import logging
+from types import FrameType
 from typing import Any
 from typing import Callable
 from typing import cast
+from typing import Optional
 from typing import TypeVar
 
 import aioredis
@@ -20,6 +23,10 @@ APPLOG = logging.getLogger(__name__)
 FnT = TypeVar("FnT", bound=Callable[..., Any])
 
 
+class RedisError:
+    pass
+
+
 def redis_timeout(func: FnT) -> FnT:
     @functools.wraps(func)
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -30,23 +37,32 @@ def redis_timeout(func: FnT) -> FnT:
         except asyncio.exceptions.TimeoutError:
             APPLOG.error("RedisCache has reached %s seconds", TIMEOUT)
         except Exception as err:
-            APPLOG.error("RedisCache error: %s", err)
-            raise
+            caller_func_name = inspect.currentframe()
+            if isinstance(caller_func_name, FrameType):
+                caller_func_name = caller_func_name.f_code.co_name  # type:ignore
+            APPLOG.warning(
+                "Error while calling %s from %s: %s",
+                func.__name__,
+                caller_func_name,
+                err,
+            )
+            return RedisError
 
     return cast(FnT, wrapper)
 
 
 class RedisCache:
     @redis_timeout
-    async def task_1(self, redis) -> None:
-        await redis.set(name="happy", value="sym")
-        response = await redis.get("happy")
-        print(response.decode("utf-8"))
+    async def task_1(redis: Optional[Redis] = None) -> None:
+        await redis.set(name="happy", value="sym")  # type: ignore
+        return await redis.get("happy")  # type: ignore
 
 
 async def main():
-    cache = RedisCache()
-    await cache.task_1()
+    response = await RedisCache.task_1()
+    if response is RedisError:
+        print("Hello")
+    print("task1: ", response.decode("utf-8"))
 
 
 if __name__ == "__main__":
