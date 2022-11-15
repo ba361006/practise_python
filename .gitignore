@@ -5,3 +5,4 @@
 test/
 .python-version
 corsa_playground/
+__pycache__/
