@@ -14,6 +14,9 @@ sqlalchemy = "*"
 PySide6 = "*"
 pytest = "*"
 redis = "^4.3.4"
+pynput = "*"
+pyperclip = "*"
+
 
 [tool.poetry.group.dev]
 # optional = true indicates packages under the group.dev.dependencies
