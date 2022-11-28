@@ -4,13 +4,14 @@ import plistlib
 import random
 import string
 import sys
-import threading
 import time
 
 import pyperclip
 from pynput import keyboard
 from PySide6 import QtCore
 from PySide6 import QtWidgets
+
+# multithreading with Qt example -> https://www.pythonguis.com/tutorials/multithreading-pyside6-applications-qthreadpool/
 
 
 class Main(QtWidgets.QMainWindow):
@@ -46,13 +47,11 @@ class Main(QtWidgets.QMainWindow):
             return lambda key: hotkey_event(self.listener.canonical(key))
 
         hotkey = keyboard.HotKey(keyboard.HotKey.parse(key), self.signal.emit)
-        print("hotkey")
         self.listener = keyboard.Listener(
             on_press=for_canonical(hotkey.press),
             on_release=for_canonical(hotkey.release),
         )
         self.listener.start()
-        print("start")
 
     def get_text_from_clip(self):
         controller = keyboard.Controller()
@@ -66,9 +65,11 @@ class Main(QtWidgets.QMainWindow):
     def button_pressed(self):
         self.listener.stop()
         self.listener.join()
-        # new_key = random.choices(string.ascii_lowercase)[0]
-        # print("new_key: ", new_key)
-        # self.keyboard_detect_start(key=f"<ctrl>+{new_key}")
+        time.sleep(0.5)
+        sys_random = random.SystemRandom()
+        new_key = sys_random.choice(string.ascii_lowercase)
+        print("new_key: ", new_key)
+        self.keyboard_detect_start(key=f"<ctrl>+{new_key}")
 
 
 if __name__ == "__main__":

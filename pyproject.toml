@@ -16,7 +16,7 @@ pytest = "*"
 redis = "^4.3.4"
 pynput = "*"
 pyperclip = "*"
-
+keyboard = "*"
 
 [tool.poetry.group.dev]
 # optional = true indicates packages under the group.dev.dependencies
