@@ -54,7 +54,7 @@ if running this file via vscode function `Run Python File`
 it indicates that the root directory would be the same as where you run the .py file
 `__name__` should be taken care of  since it return a directory with dot-notation started from the root directory.
 To let every logger inherit to the custom logger, we should either
-1. set every module/package name to qualname under logger.ini
+1. create loggers in logger.ini as many as modul we have and set their name to responding qualname
 2. create an ancestor logger like [with_code](/logging_practise/with_code/handler/logging.py) do
 3. run .py file with command line, so the root directory will change and modify qualname to the root directory
 

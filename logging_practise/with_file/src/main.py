@@ -7,20 +7,22 @@ import setting
 from bar import bar
 from foo import foo
 
-logger = logging.getLogger(__name__)
-
 
 def main():
     fileConfig(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logger.ini"))
-    logging.debug(f"name: {__name__}, logger_name: {logger.name}")
-    logging.warning(f"name: {__name__}, logger_name: {logger.name}")
-    logger.error(f"name: {__name__}, logger_name: {logger.name}")
 
-    setting.hello_from_setting()
-    bar.hello_from_bar()
-    foo.hello_from_foo()
+    # root level is warning so logging.info will neither be printed nor saving to log file
+    logging.info(f"name: {__name__}, logger_name: root")
+    logging.warning(f"name: {__name__}, logger_name: root")
+
+    # loggers in both setting and bar have not listed in logger.ini, so it will inherit root logger
+    setting.debug_from_setting()
+    bar.debug_from_bar()
+
+    # foo is defined in logger.ini, so it will follow the config under [logger_foo]
+    foo.debug_from_foo()
 
 
 if __name__ == "__main__":
-    # go check readme for futher info
+    # go check README for futher info
     main()

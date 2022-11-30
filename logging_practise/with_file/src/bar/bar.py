@@ -4,6 +4,5 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def hello_from_bar():
-    logging.warning(f"name: {__name__}, logger_name: {logger.name}")
+def debug_from_bar():
     logger.debug(f"name: {__name__}, logger_name: {logger.name}")
