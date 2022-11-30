@@ -1,6 +1,0 @@
-[2022-11-28 10:58:17,134], [main.py], [main], [MainThread], [ERROR], hello
-[2022-11-28 10:58:17,135], [feature.py], [hello], [Thread-1], [ERROR], Hello from bitch
-Traceback (most recent call last):
-  File "/Users/gaozheng/Documents/coding/practise_python/logging_practise/feature/feature.py", line 7, in hello
-    raise ValueError("bitch")
-ValueError: bitch

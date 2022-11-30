@@ -6,4 +6,4 @@ test/
 .python-version
 corsa_playground/
 __pycache__/
-.log
+*.log
