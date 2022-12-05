@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import asyncio
 import functools
 import inspect
@@ -42,42 +44,36 @@ def redis_action_error(func: FnT) -> FnT:
 
 
 class RedisCache:
-    async def __aenter__(self):
+    async def __aenter__(self) -> RedisClient:
         try:
             async with async_timeout.timeout(TIMEOUT):
-                return await aioredis.from_url(setting_url)
+                redis = await aioredis.from_url(setting_url)
+                await asyncio.sleep(2)
+                return RedisClient(redis)
         except asyncio.exceptions.TimeoutError:
             APPLOG.error("RedisCache has reached %s seconds", TIMEOUT)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Do nothing here to let the flow work normally"""
 
-    @staticmethod
+
+class RedisClient:
+    def __init__(self, redis):
+        self.redis = redis
+
     @redis_action_error
-    async def action(redis: Redis) -> None:
-        await redis.set(name="happy", value="sym")  # type: ignore
-        return await redis.get("happy")  # type: ignore
+    async def action(self) -> None:
+        await self.redis.set(name="happy", value="sym")  # type: ignore
+        return await self.redis.get("happy")  # type: ignore
 
 
-class Hello:
-    def __init__(self):
-        pass
-
-    async def do_shit(self, redis):
-        print("get in do_shit")
-        response = await RedisCache.action(redis=redis)
+async def main():
+    async with RedisCache() as redis_client:
+        response = await redis_client.action()
         if response:
             print("task1: ", response.decode("utf-8"))
         else:
             print("response: ", response)
-
-
-async def main():
-    hello = Hello()
-    async with RedisCache() as redis:
-        await hello.do_shit(redis=redis)
-        print("### do other thing ###")
-        await hello.do_shit(redis=redis)
 
 
 if __name__ == "__main__":
