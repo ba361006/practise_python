@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import asyncio
+from types import TracebackType
+from typing import Optional
 
 
 class Context:
@@ -7,7 +9,12 @@ class Context:
         """interrupt the flow if any exception happens here"""
         return "Get in __enter__"
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+    async def __aexit__(
+        self,
+        exc_type: Optional[BaseException],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
         """flow goes here if any exception happens under the context manager's scope"""
         print("exc_type: ", exc_type)
         print("exc_val: ", exc_val)
