@@ -3,9 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import functools
-import inspect
 import logging
-from types import FrameType
 from typing import Any
 from typing import Callable
 from typing import cast
@@ -43,20 +41,34 @@ def redis_timeout(func: FnT) -> FnT:
 
 
 class RedisCache:
-    @redis_timeout
+    """
+    while redis server is disconnected, aioredis.from_url still returns Redis
+    and will raise an exception when redis action is invoked.
+    then, @redis_timeout will handle the error and return None
+    so the flow should work as normal
+    """
+
     async def __aenter__(self) -> RedisCache:
         # pylint: disable=attribute-defined-outside-init
-        self.redis: Redis = await aioredis.from_url(setting_url)
+        # __aenter__ isn't decorated with @redis_timeout
+        # since we need to return self to let the flow fly as normal
+        try:
+            async with async_timeout.timeout(TIMEOUT):
+                self._redis: Redis = await aioredis.from_url(setting_url)
+        except asyncio.exceptions.TimeoutError:
+            APPLOG.error("RedisCache has reached %s seconds", TIMEOUT)
+        except Exception as err:  # pylint: disable=broad-except
+            APPLOG.error("RedisCache context manager error: %s", err)
         return self
 
     @redis_timeout
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.redis.close()
+        await self._redis.close()
 
     @redis_timeout
     async def action(self) -> None:
-        await self.redis.set(name="happy", value="sym")  # type: ignore
-        return await self.redis.get("happy")  # type: ignore
+        await self._redis.set(name="happy", value="sym")  # type: ignore
+        return await self._redis.get("happy")  # type: ignore
 
 
 async def main():
