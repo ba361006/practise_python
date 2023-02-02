@@ -28,6 +28,8 @@ class Main(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
+    app.setApplicationDisplayName("Hello")
+    app.setApplicationName("app")
     main = Main()
     main.build()
     app.exec()

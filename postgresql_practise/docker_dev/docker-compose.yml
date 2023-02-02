@@ -13,23 +13,23 @@ services:
 
   # image name defaultly would be <compose_file_directory>_<playground_ubuntu>
   # if image: is not specified in a service
-  playground_ubuntu: 
+  playground_ubuntu:
     image: playground_ubuntu
-    container_name: playground_ubuntu 
+    container_name: playground_ubuntu
     build: ./ubuntu/
     platform: linux/amd64
     tty: true
     ports:
       - "8001:8001"
-    # volumes will synchronise local directory with the container 
+    # volumes will synchronise local directory with the container
     # <local_directory>:<container_directory>
     volumes:
-      - /Users/gaozheng/Documents/coding/cienet/corsa_playground/src:/root/code
+      - ../src:/root/code
     networks:
       - playground
 
 
-  playground_db: 
+  playground_db:
     image: playground_db # image name
     container_name: playground_db # container name
     platform: linux/amd64 # for Mac Silicon
@@ -38,5 +38,5 @@ services:
       POSTGRES_DB: database
       POSTGRES_USER: username
       POSTGRES_PASSWORD: secret
-    networks: 
+    networks:
       - playground
